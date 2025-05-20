@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP学科PBL开题报告评分系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .score-input {
+            width: 60px;
+            text-align: center;
+        }
+        .total-score {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .error {
+            color: #e74c3c;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+        }
+        .score-table th, .score-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .score-table th {
+            background-color: #3498db;
+            color: white;
+        }
+        .score-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .score-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .detailed-scores {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .score-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 4px;
+        }
+        /* 添加语言切换相关样式 */
+        .language-switch {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .language-switch button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .language-switch button:hover {
+            background-color: #2980b9;
+        }
+        .bilingual-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bilingual-text span {
+            flex: 1;
+        }
+        .bilingual-text .divider {
+            margin: 0 10px;
+            color: #999;
+        }
+        /* 添加新的样式 */
+        .search-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .search-section select, .search-section button {
+            margin-right: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-section button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .search-section button:hover {
+            background-color: #2980b9;
+        }
+        .download-btn {
+            background-color: #2ecc71;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-switch">
+            <button onclick="switchLanguage('zh')">中文</button>
+            <button onclick="switchLanguage('en')">English</button>
+        </div>
+        <h1 id="page-title">AP学科PBL开题报告评分系统 / AP Subject PBL Opening Report Scoring System</h1>
+        
+        <div class="form-group">
+            <label for="group-select" id="group-label">选择答辩组 / Select Defense Group：</label>
+            <select id="group-select" required onchange="updateProjectList()">
+                <option value="">请选择答辩组 / Please select a group</option>
+                <option value="group1">全英文组 / Full English Group</option>
+                <option value="group2">自然科学1组 / Natural Science Group 1</option>
+                <option value="group3">自然科学2组 / Natural Science Group 2</option>
+                <option value="group4">社会科学1组 / Social Science Group 1</option>
+                <option value="group5">社会科学2组 / Social Science Group 2</option>
+                <option value="group6">计算机数学组 / Computer Mathematics Group</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="project-select" id="project-label">选择课题 / Select Project：</label>
+            <select id="project-select" required>
+                <option value="">请先选择答辩组 / Please select a group first</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="evaluator-name" id="evaluator-label">评分人姓名 / Evaluator Name：</label>
+            <input type="text" id="evaluator-name" required placeholder="请输入姓名首字母大写（如：张三输入ZS）" pattern="[A-Z]{1,3}" title="请输入1-3个大写字母">
+            <small class="error" id="evaluator-error"></small>
+        </div>
+
+        <table>
+            <tr>
+                <th>评分项目</th>
+                <th>分值</th>
+                <th>评分标准</th>
+                <th>得分</th>
+            </tr>
+            <tr>
+                <td>团队合作</td>
+                <td>10分</td>
+                <td>
+                    <ul>
+                        <li>团队分工明确（5分）
+                            <ul>
+                                <li>分工合理</li>
+                                <li>职责明确</li>
+                            </ul>
+                        </li>
+                        <li>团队协作（5分）
+                            <ul>
+                                <li>协作机制完善</li>
+                                <li>沟通顺畅</li>
+                            </ul>
+                        </li>
+                        <li>注：独立完成项目自动获得满分</li>
+                    </ul>
+                </td>
+                <td>
+                    <input type="number" class="score-input" min="0" max="10" step="0.5" data-category="teamwork">
+                </td>
+            </tr>
+            <tr>
+                <td>课题价值</td>
+                <td>25分</td>
+                <td>
+                    <ul>
+                        <li>实践意义（15分）
+                            <ul>
+                                <li>解决实际问题（5分）
+                                    <ul>
+                                        <li>明确说明课题要解决的具体问题</li>
+                                        <li>问题具有现实意义</li>
+                                    </ul>
+                                </li>
+                                <li>应用价值（5分）
+                                    <ul>
+                                        <li>研究成果可应用于实际</li>
+                                        <li>具有推广价值</li>
+                                    </ul>
+                                </li>
+                                <li>社会影响（5分）
+                                    <ul>
+                                        <li>对相关领域有积极影响</li>
+                                        <li>具有社会效益</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>创新性（10分）
+                            <ul>
+                                <li>研究视角创新（5分）
+                                    <ul>
+                                        <li>提出新的研究视角</li>
+                                        <li>研究方法创新</li>
+                                    </ul>
+                                </li>
+                                <li>预期成果创新（5分）
+                                    <ul>
+                                        <li>预期成果具有创新性</li>
+                                        <li>具有突破性进展</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <input type="number" class="score-input" min="0" max="25" step="0.5" data-category="value">
+                </td>
+            </tr>
+            <tr>
+                <td>学科融合</td>
+                <td>25分</td>
+                <td>
+                    <div style="color: #e74c3c; margin-bottom: 10px; padding: 5px; background-color: #fdf2f2; border-left: 3px solid #e74c3c;">
+                        <p><strong>注：</strong>非融合课题将直接获得满分</p>
+                    </div>
+                    <ul>
+                        <li>学科知识应用（15分）
+                            <ul>
+                                <li>多学科知识运用（5分）
+                                    <ul>
+                                        <li>合理运用多个学科知识</li>
+                                        <li>知识运用准确</li>
+                                    </ul>
+                                </li>
+                                <li>学科交叉深度（5分）
+                                    <ul>
+                                        <li>学科间联系紧密</li>
+                                        <li>交叉点明确</li>
+                                    </ul>
+                                </li>
+                                <li>理论支撑（5分）
+                                    <ul>
+                                        <li>理论基础扎实</li>
+                                        <li>理论应用合理</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>融合创新性（10分）
+                            <ul>
+                                <li>融合方式创新（5分）
+                                    <ul>
+                                        <li>提出新的融合方式</li>
+                                        <li>融合效果显著</li>
+                                    </ul>
+                                </li>
+                                <li>预期成果创新（5分）
+                                    <ul>
+                                        <li>融合成果具有创新性</li>
+                                        <li>具有实践价值</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <input type="number" class="score-input" min="0" max="25" step="0.5" data-category="integration">
+                </td>
+            </tr>
+            <tr>
+                <td>研究计划</td>
+                <td>30分</td>
+                <td>
+                    <ul>
+                        <li>研究方案设计（15分）
+                            <ul>
+                                <li>研究目标明确（5分）
+                                    <ul>
+                                        <li>目标具体可衡量</li>
+                                        <li>目标具有可行性</li>
+                                    </ul>
+                                </li>
+                                <li>研究内容完整（5分）
+                                    <ul>
+                                        <li>内容全面系统</li>
+                                        <li>重点突出</li>
+                                    </ul>
+                                </li>
+                                <li>研究方法恰当（5分）
+                                    <ul>
+                                        <li>方法选择合理</li>
+                                        <li>方法可操作性强</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>实施计划（15分）
+                            <ul>
+                                <li>时间安排合理（5分）
+                                    <ul>
+                                        <li>时间节点明确</li>
+                                        <li>进度安排合理</li>
+                                    </ul>
+                                </li>
+                                <li>资源保障充分（5分）
+                                    <ul>
+                                        <li>所需资源明确</li>
+                                        <li>资源获取可行</li>
+                                    </ul>
+                                </li>
+                                <li>风险控制（5分）
+                                    <ul>
+                                        <li>潜在风险识别</li>
+                                        <li>应对措施完善</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <input type="number" class="score-input" min="0" max="30" step="0.5" data-category="plan">
+                </td>
+            </tr>
+            <tr>
+                <td>答辩表现</td>
+                <td>20分</td>
+                <td>
+                    <ul>
+                        <li>展示效果（10分）
+                            <ul>
+                                <li>内容完整（4分）
+                                    <ul>
+                                        <li>内容全面系统</li>
+                                        <li>重点突出</li>
+                                    </ul>
+                                </li>
+                                <li>表达清晰（3分）
+                                    <ul>
+                                        <li>语言表达准确</li>
+                                        <li>逻辑性强</li>
+                                    </ul>
+                                </li>
+                                <li>展示技巧（3分）
+                                    <ul>
+                                        <li>展示方式恰当</li>
+                                        <li>时间控制合理</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>回答问题质量（10分）
+                            <ul>
+                                <li>回答准确（4分）
+                                    <ul>
+                                        <li>回答切中要点</li>
+                                        <li>内容准确</li>
+                                    </ul>
+                                </li>
+                                <li>思路清晰（3分）
+                                    <ul>
+                                        <li>逻辑性强</li>
+                                        <li>表达流畅</li>
+                                    </ul>
+                                </li>
+                                <li>应变能力强（3分）
+                                    <ul>
+                                        <li>反应迅速</li>
+                                        <li>应对得当</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <input type="number" class="score-input" min="0" max="20" step="0.5" data-category="defense">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>总分：</strong></td>
+                <td class="total-score">0</td>
+            </tr>
+        </table>
+
+        <button class="submit-btn" onclick="submitScore()">提交评分</button>
+
+        <div class="results" id="results">
+            <h2>评分结果</h2>
+            
+            <div class="search-section">
+                <select id="search-type">
+                    <option value="all">查看所有课题得分</option>
+                    <option value="project">按课题查询</option>
+                </select>
+                <select id="project-search" style="display: none;">
+                    <option value="">请选择课题</option>
+                </select>
+                <button onclick="searchScores()">查询</button>
+                <button class="download-btn" onclick="downloadScores()">下载评分结果</button>
+            </div>
+
+            <div id="average-scores"></div>
+            <div id="detailed-scores"></div>
+        </div>
+    </div>
+
+    <script>
+        // 存储所有评分数据
+        let allScores = {};
+
+        // 预设各答辩组的课题
+        const groupProjects = {
+            group1: [
+                "课题1：人工智能在生物医学中的应用研究",
+                "课题2：新型太阳能电池材料的研究与开发",
+                "课题3：环境污染物降解技术研究",
+                "课题4：量子计算在化学模拟中的应用",
+                "课题5：基因编辑技术的伦理与安全研究",
+                "课题6：纳米材料在能源存储中的应用"
+            ],
+            group2: [
+                "课题1：全球化背景下的文化认同研究",
+                "课题2：社交媒体对青少年心理健康的影响",
+                "课题3：可持续发展与环境保护政策研究",
+                "课题4：跨文化交际中的文化冲突研究",
+                "课题5：数字时代的教育公平问题研究",
+                "课题6：全球化背景下的文化认同研究"
+            ],
+            group3: [
+                "课题1：机器学习在金融预测中的应用",
+                "课题2：区块链技术在供应链管理中的应用",
+                "课题3：大数据分析在教育评估中的应用",
+                "课题4：人工智能在医疗诊断中的应用",
+                "课题5：量子计算在密码学中的应用",
+                "课题6：数据可视化在科学传播中的应用"
+            ],
+            group4: [
+                "课题1：跨文化视角下的文学翻译研究",
+                "课题2：数字媒体时代的文学创作研究",
+                "课题3：语言习得中的文化因素研究",
+                "课题4：文学作品中的人性探索研究",
+                "课题5：现代诗歌的跨文化传播研究",
+                "课题6：文学批评的新方法研究"
+            ],
+            group5: [
+                "课题1：人工智能与教育学的融合研究",
+                "课题2：环境科学与经济学的交叉研究",
+                "课题3：心理学与计算机科学的结合研究",
+                "课题4：生物学与材料科学的交叉研究",
+                "课题5：语言学与人工智能的融合研究",
+                "课题6：艺术与技术的创新融合研究"
+            ],
+            group6: [
+                "课题1：数据科学与社会科学的研究方法融合",
+                "课题2：生物信息学与医学的交叉研究",
+                "课题3：环境科学与政策研究的结合",
+                "课题4：认知科学与教育技术的融合",
+                "课题5：量子物理与信息科学的交叉研究",
+                "课题6：人文艺术与数字技术的创新融合"
+            ]
+        };
+
+        // 添加语言切换功能
+        function switchLanguage(lang) {
+            const isEnglishGroup = document.getElementById('group-select').value === 'group1';
+            const elements = document.querySelectorAll('[id$="-label"]');
+            
+            elements.forEach(element => {
+                const id = element.id;
+                if (lang === 'en' || isEnglishGroup) {
+                    switch(id) {
+                        case 'group-label':
+                            element.textContent = 'Select Defense Group：';
+                            break;
+                        case 'project-label':
+                            element.textContent = 'Select Project：';
+                            break;
+                        case 'evaluator-label':
+                            element.textContent = 'Evaluator Name：';
+                            break;
+                    }
+                } else {
+                    switch(id) {
+                        case 'group-label':
+                            element.textContent = '选择答辩组：';
+                            break;
+                        case 'project-label':
+                            element.textContent = '选择课题：';
+                            break;
+                        case 'evaluator-label':
+                            element.textContent = '评分人姓名：';
+                            break;
+                    }
+                }
+            });
+
+            // 更新页面标题
+            document.getElementById('page-title').textContent = 
+                lang === 'en' || isEnglishGroup ? 
+                'AP Subject PBL Opening Report Scoring System' : 
+                'AP学科PBL开题报告评分系统';
+
+            // 更新下拉选项
+            const groupSelect = document.getElementById('group-select');
+            const projectSelect = document.getElementById('project-select');
+            
+            if (lang === 'en' || isEnglishGroup) {
+                groupSelect.options[0].text = 'Please select a group';
+                projectSelect.options[0].text = 'Please select a project first';
+            } else {
+                groupSelect.options[0].text = '请选择答辩组';
+                projectSelect.options[0].text = '请先选择答辩组';
+            }
+
+            // 更新查询选项
+            const searchType = document.getElementById('search-type');
+            if (lang === 'en' || isEnglishGroup) {
+                searchType.options[0].text = 'View All Project Scores';
+                searchType.options[1].text = 'Search by Project';
+            } else {
+                searchType.options[0].text = '查看所有课题得分';
+                searchType.options[1].text = '按课题查询';
+            }
+
+            // 更新按钮文本
+            document.querySelector('.search-section button').textContent = 
+                lang === 'en' || isEnglishGroup ? 'Search' : '查询';
+            document.querySelector('.download-btn').textContent = 
+                lang === 'en' || isEnglishGroup ? 'Download Results' : '下载评分结果';
+
+            // 更新评分表格
+            const tableHeaders = document.querySelectorAll('table th');
+            if (lang === 'en' || isEnglishGroup) {
+                tableHeaders[0].textContent = 'Scoring Items';
+                tableHeaders[1].textContent = 'Points';
+                tableHeaders[2].textContent = 'Scoring Criteria';
+                tableHeaders[3].textContent = 'Score';
+                
+                // 更新评分项目
+                const scoringItems = document.querySelectorAll('table tr td:first-child');
+                scoringItems[0].textContent = 'Teamwork';
+                scoringItems[1].textContent = 'Project Value';
+                scoringItems[2].textContent = 'Subject Integration';
+                scoringItems[3].textContent = 'Research Plan';
+                scoringItems[4].textContent = 'Defense Performance';
+                
+                // 更新评分标准
+                const criteria = document.querySelectorAll('table tr td:nth-child(3)');
+                criteria[0].innerHTML = `
+                    <ul>
+                        <li>Clear Team Division (5 points)
+                            <ul>
+                                <li>Reasonable division of labor</li>
+                                <li>Clear responsibilities</li>
+                            </ul>
+                        </li>
+                        <li>Team Collaboration (5 points)
+                            <ul>
+                                <li>Well-established collaboration mechanism</li>
+                                <li>Smooth communication</li>
+                            </ul>
+                        </li>
+                        <li>Note: Individual projects automatically receive full marks</li>
+                    </ul>`;
+                criteria[1].innerHTML = `
+                    <ul>
+                        <li>Practical Significance (15 points)
+                            <ul>
+                                <li>Solving Real Problems (5 points)
+                                    <ul>
+                                        <li>Clearly state specific problems to be solved</li>
+                                        <li>Problems have practical significance</li>
+                                    </ul>
+                                </li>
+                                <li>Application Value (5 points)
+                                    <ul>
+                                        <li>Research results can be applied in practice</li>
+                                        <li>Has promotion value</li>
+                                    </ul>
+                                </li>
+                                <li>Social Impact (5 points)
+                                    <ul>
+                                        <li>Positive impact on related fields</li>
+                                        <li>Has social benefits</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Innovation (10 points)
+                            <ul>
+                                <li>Research Perspective Innovation (5 points)
+                                    <ul>
+                                        <li>Propose new research perspectives</li>
+                                        <li>Research method innovation</li>
+                                    </ul>
+                                </li>
+                                <li>Expected Results Innovation (5 points)
+                                    <ul>
+                                        <li>Expected results are innovative</li>
+                                        <li>Has breakthrough progress</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>`;
+                criteria[2].innerHTML = `
+                    <div style="color: #e74c3c; margin-bottom: 10px; padding: 5px; background-color: #fdf2f2; border-left: 3px solid #e74c3c;">
+                        <p><strong>Note:</strong> Non-integrated topics will automatically receive full marks</p>
+                    </div>
+                    <ul>
+                        <li>Subject Knowledge Application (15 points)
+                            <ul>
+                                <li>Multi-subject Knowledge Application (5 points)
+                                    <ul>
+                                        <li>Reasonable use of multiple subject knowledge</li>
+                                        <li>Accurate knowledge application</li>
+                                    </ul>
+                                </li>
+                                <li>Subject Integration Depth (5 points)
+                                    <ul>
+                                        <li>Close connection between subjects</li>
+                                        <li>Clear integration points</li>
+                                    </ul>
+                                </li>
+                                <li>Theoretical Support (5 points)
+                                    <ul>
+                                        <li>Solid theoretical foundation</li>
+                                        <li>Reasonable theory application</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Integration Innovation (10 points)
+                            <ul>
+                                <li>Integration Method Innovation (5 points)
+                                    <ul>
+                                        <li>Propose new integration methods</li>
+                                        <li>Significant integration effect</li>
+                                    </ul>
+                                </li>
+                                <li>Expected Results Innovation (5 points)
+                                    <ul>
+                                        <li>Integration results are innovative</li>
+                                        <li>Has practical value</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>`;
+                criteria[3].innerHTML = `
+                    <ul>
+                        <li>Research Design (15 points)
+                            <ul>
+                                <li>Clear Research Objectives (5 points)
+                                    <ul>
+                                        <li>Specific and measurable objectives</li>
+                                        <li>Feasible objectives</li>
+                                    </ul>
+                                </li>
+                                <li>Complete Research Content (5 points)
+                                    <ul>
+                                        <li>Comprehensive and systematic content</li>
+                                        <li>Clear focus</li>
+                                    </ul>
+                                </li>
+                                <li>Appropriate Research Methods (5 points)
+                                    <ul>
+                                        <li>Reasonable method selection</li>
+                                        <li>Strong operability</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Implementation Plan (15 points)
+                            <ul>
+                                <li>Reasonable Timeline (5 points)
+                                    <ul>
+                                        <li>Clear time nodes</li>
+                                        <li>Reasonable progress arrangement</li>
+                                    </ul>
+                                </li>
+                                <li>Sufficient Resource Support (5 points)
+                                    <ul>
+                                        <li>Clear required resources</li>
+                                        <li>Feasible resource acquisition</li>
+                                    </ul>
+                                </li>
+                                <li>Risk Control (5 points)
+                                    <ul>
+                                        <li>Potential risk identification</li>
+                                        <li>Complete response measures</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>`;
+
+                // 更新总分文本
+                document.querySelector('table tr:last-child td:first-child').textContent = 'Total Score：';
+            } else {
+                // 恢复中文显示
+                tableHeaders[0].textContent = '评分项目';
+                tableHeaders[1].textContent = '分值';
+                tableHeaders[2].textContent = '评分标准';
+                tableHeaders[3].textContent = '得分';
+                
+                // 恢复评分项目
+                const scoringItems = document.querySelectorAll('table tr td:first-child');
+                scoringItems[0].textContent = '团队合作';
+                scoringItems[1].textContent = '课题价值';
+                scoringItems[2].textContent = '学科融合';
+                scoringItems[3].textContent = '研究计划';
+                scoringItems[4].textContent = '答辩表现';
+                
+                // 恢复评分标准（使用原始中文内容）
+                // ... 这里需要恢复原始的中文评分标准 ...
+                
+                // 恢复总分文本
+                document.querySelector('table tr:last-child td:first-child').textContent = '总分：';
+            }
+
+            // 更新提交按钮文本
+            document.querySelector('.submit-btn').textContent = 
+                lang === 'en' || isEnglishGroup ? 'Submit Score' : '提交评分';
+
+            // 更新结果显示标题
+            document.querySelector('.results h2').textContent = 
+                lang === 'en' || isEnglishGroup ? 'Scoring Results' : '评分结果';
+        }
+
+        // 修改updateProjectList函数
+        function updateProjectList() {
+            const groupSelect = document.getElementById('group-select');
+            const projectSelect = document.getElementById('project-select');
+            const selectedGroup = groupSelect.value;
+            const isEnglishGroup = selectedGroup === 'group1';
+
+            // 清空现有选项
+            projectSelect.innerHTML = isEnglishGroup ? 
+                '<option value="">Please select a project</option>' : 
+                '<option value="">请选择课题</option>';
+
+            if (selectedGroup && groupProjects[selectedGroup]) {
+                groupProjects[selectedGroup].forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project;
+                    option.textContent = project;
+                    projectSelect.appendChild(option);
+                });
+            }
+
+            // 切换语言显示
+            switchLanguage(isEnglishGroup ? 'en' : 'zh');
+        }
+
+        // 计算总分
+        function calculateTotal() {
+            const inputs = document.querySelectorAll('.score-input');
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+            document.querySelector('.total-score').textContent = total.toFixed(1);
+            return total;
+        }
+
+        // 监听分数输入变化
+        document.querySelectorAll('.score-input').forEach(input => {
+            input.addEventListener('input', calculateTotal);
+        });
+
+        // 添加评分人姓名验证
+        document.getElementById('evaluator-name').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const errorElement = document.getElementById('evaluator-error');
+            
+            // 只允许输入大写字母
+            e.target.value = value.toUpperCase();
+            
+            // 验证长度（1-3个字母）
+            if (value.length > 3) {
+                e.target.value = value.slice(0, 3);
+            }
+            
+            // 验证是否只包含字母
+            if (value && !/^[A-Z]+$/.test(value)) {
+                errorElement.textContent = '请输入大写字母';
+            } else {
+                errorElement.textContent = '';
+            }
+        });
+
+        // 修改提交评分函数中的验证
+        function submitScore() {
+            const group = document.getElementById('group-select').value;
+            const project = document.getElementById('project-select').value;
+            const evaluator = document.getElementById('evaluator-name').value;
+            
+            if (!group || !project || !evaluator) {
+                alert('请选择答辩组、课题并填写评分人姓名！');
+                return;
+            }
+
+            // 验证评分人姓名格式
+            if (!/^[A-Z]{1,3}$/.test(evaluator)) {
+                alert('请输入1-3个大写字母作为评分人姓名！');
+                return;
+            }
+
+            const scores = {
+                evaluator: evaluator,
+                group: group,
+                scores: {
+                    teamwork: parseFloat(document.querySelector('[data-category="teamwork"]').value) || 0,
+                    value: parseFloat(document.querySelector('[data-category="value"]').value) || 0,
+                    integration: parseFloat(document.querySelector('[data-category="integration"]').value) || 0,
+                    plan: parseFloat(document.querySelector('[data-category="plan"]').value) || 0,
+                    defense: parseFloat(document.querySelector('[data-category="defense"]').value) || 0
+                },
+                total: calculateTotal()
+            };
+
+            if (!allScores[project]) {
+                allScores[project] = [];
+            }
+            allScores[project].push(scores);
+
+            // 更新平均分显示
+            updateAverageScores();
+            
+            // 清空表单
+            document.getElementById('evaluator-name').value = '';
+            document.querySelectorAll('.score-input').forEach(input => {
+                input.value = '';
+            });
+            calculateTotal();
+        }
+
+        // 修改updateAverageScores函数，添加语言支持
+        function updateAverageScores() {
+            const resultsDiv = document.getElementById('average-scores');
+            const detailedScoresDiv = document.getElementById('detailed-scores');
+            const isEnglishGroup = document.getElementById('group-select').value === 'group1';
+            resultsDiv.innerHTML = '';
+            detailedScoresDiv.innerHTML = '';
+
+            // 按答辩组分类显示结果
+            for (const group in groupProjects) {
+                const groupDiv = document.createElement('div');
+                const groupName = document.querySelector(`#group-select option[value="${group}"]`).textContent;
+                groupDiv.innerHTML = `<h2>${groupName}</h2>`;
+                
+                groupProjects[group].forEach(project => {
+                    if (allScores[project] && allScores[project].length > 0) {
+                        const scores = allScores[project];
+                        const totalScores = scores.length;
+                        
+                        const averages = {
+                            teamwork: 0,
+                            value: 0,
+                            integration: 0,
+                            plan: 0,
+                            defense: 0,
+                            total: 0
+                        };
+
+                        scores.forEach(score => {
+                            for (const category in score.scores) {
+                                averages[category] += score.scores[category];
+                            }
+                            averages.total += score.total;
+                        });
+
+                        // 创建评分详情表格
+                        const detailedTable = document.createElement('table');
+                        detailedTable.className = 'score-table';
+                        detailedTable.innerHTML = `
+                            <thead>
+                                <tr>
+                                    <th>${isEnglishGroup ? 'Evaluator' : '评分人'}</th>
+                                    <th>${isEnglishGroup ? 'Teamwork' : '团队合作'}</th>
+                                    <th>${isEnglishGroup ? 'Project Value' : '课题价值'}</th>
+                                    <th>${isEnglishGroup ? 'Subject Integration' : '学科融合'}</th>
+                                    <th>${isEnglishGroup ? 'Research Plan' : '研究计划'}</th>
+                                    <th>${isEnglishGroup ? 'Defense Performance' : '答辩表现'}</th>
+                                    <th>${isEnglishGroup ? 'Total Score' : '总分'}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${scores.map(score => `
+                                    <tr>
+                                        <td>${score.evaluator}</td>
+                                        <td>${score.scores.teamwork.toFixed(1)}</td>
+                                        <td>${score.scores.value.toFixed(1)}</td>
+                                        <td>${score.scores.integration.toFixed(1)}</td>
+                                        <td>${score.scores.plan.toFixed(1)}</td>
+                                        <td>${score.scores.defense.toFixed(1)}</td>
+                                        <td>${score.total.toFixed(1)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        `;
+
+                        const projectDiv = document.createElement('div');
+                        projectDiv.innerHTML = `
+                            <h3>${project}</h3>
+                            <div class="score-summary">
+                                <p>${isEnglishGroup ? 'Number of Evaluators' : '评分人数'}：${totalScores}</p>
+                                <p>${isEnglishGroup ? 'Average Scores' : '平均分'}：</p>
+                                <ul>
+                                    <li>${isEnglishGroup ? 'Teamwork' : '团队合作'}：${(averages.teamwork / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                    <li>${isEnglishGroup ? 'Project Value' : '课题价值'}：${(averages.value / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                    <li>${isEnglishGroup ? 'Subject Integration' : '学科融合'}：${(averages.integration / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                    <li>${isEnglishGroup ? 'Research Plan' : '研究计划'}：${(averages.plan / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                    <li>${isEnglishGroup ? 'Defense Performance' : '答辩表现'}：${(averages.defense / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                    <li><strong>${isEnglishGroup ? 'Total Score' : '总分'}：${(averages.total / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</strong></li>
+                                </ul>
+                            </div>
+                            <div class="detailed-scores">
+                                <h4>${isEnglishGroup ? 'Detailed Scoring Records' : '详细评分记录'}</h4>
+                            </div>
+                        `;
+                        
+                        projectDiv.querySelector('.detailed-scores').appendChild(detailedTable);
+                        groupDiv.appendChild(projectDiv);
+                    }
+                });
+                
+                if (groupDiv.children.length > 1) {
+                    resultsDiv.appendChild(groupDiv);
+                }
+            }
+        }
+
+        // 添加查询类型切换功能
+        document.getElementById('search-type').addEventListener('change', function(e) {
+            const projectSearch = document.getElementById('project-search');
+            if (e.target.value === 'project') {
+                projectSearch.style.display = 'inline-block';
+                updateProjectSearchList();
+            } else {
+                projectSearch.style.display = 'none';
+            }
+        });
+
+        // 修改updateProjectSearchList函数
+        function updateProjectSearchList() {
+            const projectSearch = document.getElementById('project-search');
+            const isEnglishGroup = document.getElementById('group-select').value === 'group1';
+            projectSearch.innerHTML = '<option value="">' + (isEnglishGroup ? 'Please select a project' : '请选择课题') + '</option>';
+
+            for (const group in groupProjects) {
+                const groupName = document.querySelector(`#group-select option[value="${group}"]`).textContent;
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = isEnglishGroup ? groupName.split(' / ')[1] : groupName.split(' / ')[0];
+                
+                groupProjects[group].forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project;
+                    option.textContent = project;
+                    optgroup.appendChild(option);
+                });
+                
+                projectSearch.appendChild(optgroup);
+            }
+        }
+
+        // 查询评分结果
+        function searchScores() {
+            const searchType = document.getElementById('search-type').value;
+            const projectSearch = document.getElementById('project-search');
+            const isEnglishGroup = document.getElementById('group-select').value === 'group1';
+
+            if (searchType === 'project' && !projectSearch.value) {
+                alert(isEnglishGroup ? 'Please select a project' : '请选择课题');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('average-scores');
+            const detailedScoresDiv = document.getElementById('detailed-scores');
+            resultsDiv.innerHTML = '';
+            detailedScoresDiv.innerHTML = '';
+
+            if (searchType === 'all') {
+                updateAverageScores();
+            } else {
+                const project = projectSearch.value;
+                if (allScores[project] && allScores[project].length > 0) {
+                    const scores = allScores[project];
+                    const totalScores = scores.length;
+                    
+                    const averages = {
+                        teamwork: 0,
+                        value: 0,
+                        integration: 0,
+                        plan: 0,
+                        defense: 0,
+                        total: 0
+                    };
+
+                    scores.forEach(score => {
+                        for (const category in score.scores) {
+                            averages[category] += score.scores[category];
+                        }
+                        averages.total += score.total;
+                    });
+
+                    const projectDiv = document.createElement('div');
+                    projectDiv.innerHTML = `
+                        <h3>${project}</h3>
+                        <div class="score-summary">
+                            <p>${isEnglishGroup ? 'Number of Evaluators' : '评分人数'}：${totalScores}</p>
+                            <p>${isEnglishGroup ? 'Average Scores' : '平均分'}：</p>
+                            <ul>
+                                <li>${isEnglishGroup ? 'Teamwork' : '团队合作'}：${(averages.teamwork / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                <li>${isEnglishGroup ? 'Project Value' : '课题价值'}：${(averages.value / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                <li>${isEnglishGroup ? 'Subject Integration' : '学科融合'}：${(averages.integration / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                <li>${isEnglishGroup ? 'Research Plan' : '研究计划'}：${(averages.plan / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                <li>${isEnglishGroup ? 'Defense Performance' : '答辩表现'}：${(averages.defense / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</li>
+                                <li><strong>${isEnglishGroup ? 'Total Score' : '总分'}：${(averages.total / totalScores).toFixed(1)}${isEnglishGroup ? ' points' : '分'}</strong></li>
+                            </ul>
+                        </div>
+                        <div class="detailed-scores">
+                            <h4>${isEnglishGroup ? 'Detailed Scoring Records' : '详细评分记录'}</h4>
+                        </div>
+                    `;
+
+                    const detailedTable = document.createElement('table');
+                    detailedTable.className = 'score-table';
+                    detailedTable.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>${isEnglishGroup ? 'Evaluator' : '评分人'}</th>
+                                <th>${isEnglishGroup ? 'Teamwork' : '团队合作'}</th>
+                                <th>${isEnglishGroup ? 'Project Value' : '课题价值'}</th>
+                                <th>${isEnglishGroup ? 'Subject Integration' : '学科融合'}</th>
+                                <th>${isEnglishGroup ? 'Research Plan' : '研究计划'}</th>
+                                <th>${isEnglishGroup ? 'Defense Performance' : '答辩表现'}</th>
+                                <th>${isEnglishGroup ? 'Total Score' : '总分'}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${scores.map(score => `
+                                <tr>
+                                    <td>${score.evaluator}</td>
+                                    <td>${score.scores.teamwork.toFixed(1)}</td>
+                                    <td>${score.scores.value.toFixed(1)}</td>
+                                    <td>${score.scores.integration.toFixed(1)}</td>
+                                    <td>${score.scores.plan.toFixed(1)}</td>
+                                    <td>${score.scores.defense.toFixed(1)}</td>
+                                    <td>${score.total.toFixed(1)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    `;
+
+                    projectDiv.querySelector('.detailed-scores').appendChild(detailedTable);
+                    resultsDiv.appendChild(projectDiv);
+                } else {
+                    resultsDiv.innerHTML = `<p>${isEnglishGroup ? 'No scoring records found for this project' : '该课题暂无评分记录'}</p>`;
+                }
+            }
+        }
+
+        // 下载评分结果
+        function downloadScores() {
+            const isEnglishGroup = document.getElementById('group-select').value === 'group1';
+            const searchType = document.getElementById('search-type').value;
+            const projectSearch = document.getElementById('project-search');
+            
+            let data = [];
+            let filename = isEnglishGroup ? 'scoring_results' : '评分结果';
+
+            if (searchType === 'all') {
+                // 下载所有课题的评分结果
+                for (const group in groupProjects) {
+                    const groupName = document.querySelector(`#group-select option[value="${group}"]`).textContent;
+                    groupProjects[group].forEach(project => {
+                        if (allScores[project] && allScores[project].length > 0) {
+                            const scores = allScores[project];
+                            const totalScores = scores.length;
+                            const averages = {
+                                teamwork: 0,
+                                value: 0,
+                                integration: 0,
+                                plan: 0,
+                                defense: 0,
+                                total: 0
+                            };
+
+                            scores.forEach(score => {
+                                for (const category in score.scores) {
+                                    averages[category] += score.scores[category];
+                                }
+                                averages.total += score.total;
+                            });
+
+                            data.push({
+                                group: groupName,
+                                project: project,
+                                evaluators: totalScores,
+                                averageScores: {
+                                    teamwork: (averages.teamwork / totalScores).toFixed(1),
+                                    value: (averages.value / totalScores).toFixed(1),
+                                    integration: (averages.integration / totalScores).toFixed(1),
+                                    plan: (averages.plan / totalScores).toFixed(1),
+                                    defense: (averages.defense / totalScores).toFixed(1),
+                                    total: (averages.total / totalScores).toFixed(1)
+                                },
+                                detailedScores: scores
+                            });
+                        }
+                    });
+                }
+                filename += '_all';
+            } else {
+                // 下载单个课题的评分结果
+                const project = projectSearch.value;
+                if (allScores[project] && allScores[project].length > 0) {
+                    const scores = allScores[project];
+                    const totalScores = scores.length;
+                    const averages = {
+                        teamwork: 0,
+                        value: 0,
+                        integration: 0,
+                        plan: 0,
+                        defense: 0,
+                        total: 0
+                    };
+
+                    scores.forEach(score => {
+                        for (const category in score.scores) {
+                            averages[category] += score.scores[category];
+                        }
+                        averages.total += score.total;
+                    });
+
+                    data.push({
+                        project: project,
+                        evaluators: totalScores,
+                        averageScores: {
+                            teamwork: (averages.teamwork / totalScores).toFixed(1),
+                            value: (averages.value / totalScores).toFixed(1),
+                            integration: (averages.integration / totalScores).toFixed(1),
+                            plan: (averages.plan / totalScores).toFixed(1),
+                            defense: (averages.defense / totalScores).toFixed(1),
+                            total: (averages.total / totalScores).toFixed(1)
+                        },
+                        detailedScores: scores
+                    });
+                    filename += '_' + project.replace(/[^a-zA-Z0-9]/g, '_');
+                }
+            }
+
+            if (data.length === 0) {
+                alert(isEnglishGroup ? 'No scoring records to download' : '没有可下载的评分记录');
+                return;
+            }
+
+            // 生成CSV内容
+            let csvContent = isEnglishGroup ? 
+                'Group,Project,Number of Evaluators,Teamwork,Project Value,Subject Integration,Research Plan,Defense Performance,Total Score\n' :
+                '答辩组,课题,评分人数,团队合作,课题价值,学科融合,研究计划,答辩表现,总分\n';
+
+            data.forEach(item => {
+                const row = [
+                    item.group || '',
+                    item.project,
+                    item.evaluators,
+                    item.averageScores.teamwork,
+                    item.averageScores.value,
+                    item.averageScores.integration,
+                    item.averageScores.plan,
+                    item.averageScores.defense,
+                    item.averageScores.total
+                ].join(',');
+                csvContent += row + '\n';
+            });
+
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename + '.csv';
+            link.click();
+        }
+    </script>
+</body>
+</html> 
